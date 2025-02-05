@@ -1,0 +1,6 @@
+@lab1_nour_kassem_HostAddress = http://localhost:5094
+
+GET {{lab1_nour_kassem_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

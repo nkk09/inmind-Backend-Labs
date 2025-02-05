@@ -1,0 +1,17 @@
+﻿# Ignore compiled binaries
+bin/
+obj/
+
+# Ignore Rider / Visual Studio files
+.vs/
+.idea/
+
+# Ignore user-uploaded images
+wwwroot/uploads/
+
+# Ignore local environment settings
+appsettings.json
+secrets.json
+
+
+#asked chatgpt for help... I noticed eno some of these I dont even have yet, bs thought it wouldnt hurt to keep them anw
