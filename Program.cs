@@ -1,4 +1,5 @@
 using System.Threading.RateLimiting;
+using lab1_nour_kassem.Services;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,13 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();
+
+//make a singleton service injection, because:
+//at first I tried the scoped service and I discovered that updating users
+//or deleting them wouldn't last until the next request, where they would
+//still be available
+//since my data is hardcoded I need to keep it "alive" for the whole session
+builder.Services.AddSingleton<UserService>();
 
 // Enable static file serving
 builder.Services.AddDirectoryBrowser();
