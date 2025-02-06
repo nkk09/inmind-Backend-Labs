@@ -27,6 +27,7 @@ builder.Services.AddSingleton<UserService>();
 builder.Services.AddScoped<DateService>();
 
 //finally for image?
+builder.Services.AddScoped<ImageService>();
 
 // Enable static file serving
 builder.Services.AddDirectoryBrowser();

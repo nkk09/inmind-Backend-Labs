@@ -1,4 +1,6 @@
-﻿namespace lab1_nour_kassem.Controllers;
+﻿using lab1_nour_kassem.Services;
+
+namespace lab1_nour_kassem.Controllers;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,45 +9,38 @@ using System.Threading.Tasks;
 
 [Route("api/[controller]")]
 [ApiController]
-
-
-
 public class ImageController : ControllerBase
 {
-    //I want to limit this to images only, so we are going to set the allowed extensions:
-    private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
-    
+    private readonly ImageService _imageService;
+
+    public ImageController(ImageService imageService)
+    {
+        _imageService = imageService;
+    }
+
+
     [HttpPost("upload-image")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadImage(IFormFile file)
     {
-        
-        if (file.Length == 0)
+        try
         {
-            return BadRequest(new { message = "No file uploaded." });
+            var filePath = await _imageService.upload_image(file);
+            return Ok(new { message = "File uploaded successfully.", filePath });
         }
-        
-        var extension = Path.GetExtension(file.FileName).ToLower();
-        if (!AllowedExtensions.Contains(extension))
+        catch (ArgumentNullException ex)
         {
-            return BadRequest(new { message = "Invalid file extension. Please choose an image." });
+            return BadRequest(ex.Message);
         }
-        
-        
-        var uploadsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-
-        if (!Directory.Exists(uploadsDirectory))
+        catch (ArgumentException ex)
         {
-            Directory.CreateDirectory(uploadsDirectory);
+            return BadRequest(ex.Message);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
         }
 
-        var filePath = Path.Combine(uploadsDirectory, file.FileName);
-
-        await using (var fileStream = new FileStream(filePath, FileMode.Create))
-        {
-            await file.CopyToAsync(fileStream);
-        }
-
-        return Ok(new { message = "File uploaded successfully.", filePath });
+        
     }
 }
