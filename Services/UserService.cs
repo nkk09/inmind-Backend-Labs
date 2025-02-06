@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using lab1_nour_kassem.Models;
+﻿using lab1_nour_kassem.Models;
 
 namespace lab1_nour_kassem.Services
 {

@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
-using System.Runtime.InteropServices.JavaScript;
-using lab1_nour_kassem.Models;
 using Microsoft.AspNetCore.Mvc;
+using lab1_nour_kassem.Services;
 
 namespace lab1_nour_kassem.Controllers;
 
@@ -9,6 +8,7 @@ namespace lab1_nour_kassem.Controllers;
 [ApiController]
 public class DateController : ControllerBase
 {
+    private readonly DateService _dateService;
     /*[HttpGet]
     public ActionResult<DateTime> GetCurrentDate()
     {
@@ -20,20 +20,7 @@ public class DateController : ControllerBase
     public IActionResult GetFormattedDate()
     {
         var language = Request.Headers["Accept-Language"].ToString();
-
-        if (string.IsNullOrEmpty(language) || language == "*")
-        {
-            language = "en-US"; // Default language
-        }
         
-        
-        //however if i leave it empty, it autofills with a bunch of languages and q's and so my code will
-        //think it is ivalid. so we try to split and take the first language here:
-        else
-        {
-            language = language.Split(',')[0].Trim();
-        }
-
         try
         {
             bool isValid = CultureInfo.GetCultures(CultureTypes.AllCultures)
