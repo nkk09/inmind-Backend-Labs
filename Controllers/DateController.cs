@@ -15,6 +15,10 @@ public class DateController : ControllerBase
         return Ok(DateOnly.FromDateTime(DateTime.Now));
 
     }*/
+    public DateController(DateService dateService)
+    {
+        _dateService = dateService;
+    }
 
     [HttpGet]
     public IActionResult GetFormattedDate()
@@ -23,18 +27,7 @@ public class DateController : ControllerBase
         
         try
         {
-            bool isValid = CultureInfo.GetCultures(CultureTypes.AllCultures)
-                .Any(c => c.Name.Equals(language, StringComparison.Ordinal));
-            //OH SO THAT'S HOW YOU MAKE IT CASE INSENSITIVE! nice :)
-
-            if (!isValid)
-            {
-                throw new CultureNotFoundException($"Invalid language code");
-            }
-
-            var culture = new CultureInfo(language);
-            var formattedDate = DateTime.Now.ToString("D", culture);
-
+            var formattedDate = _dateService.getFormattedDate(language);
             return Ok(new { date = formattedDate });
         }
         catch (CultureNotFoundException ex)

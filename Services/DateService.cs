@@ -2,7 +2,7 @@
 
 namespace lab1_nour_kassem.Services
 {
-    public class DataService
+    public class DateService
     {
         public string getFormattedDate(string language)
         {

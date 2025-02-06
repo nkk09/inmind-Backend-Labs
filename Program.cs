@@ -23,6 +23,11 @@ builder.Services.AddControllersWithViews();
 //since my data is hardcoded I need to keep it "alive" for the whole session
 builder.Services.AddSingleton<UserService>();
 
+//however for date we're not storing any data so it's better to use scoped
+builder.Services.AddScoped<DateService>();
+
+//finally for image?
+
 // Enable static file serving
 builder.Services.AddDirectoryBrowser();
 
