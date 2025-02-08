@@ -15,6 +15,7 @@ namespace lab1_nour_kassem.Controllers
             _userService = userService;
         }
         
+        //middleware should now handle all exceptions so we remove try catch blocks from here!
        
         [HttpGet]
         public ActionResult<List<User>> GetUsers()
@@ -24,78 +25,29 @@ namespace lab1_nour_kassem.Controllers
 
         [HttpGet("{id}")]
         public ActionResult<User> GetUser(int id)
-        {
-            try
-            {
-                return Ok(_userService.GetUserById(id));
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { error = ex.Message });
-            }
+        { 
+            return Ok(_userService.GetUserById(id));
         }
 
         [HttpGet("name/{name}")]
         public ActionResult<List<User>> GetUsersByName(string name)
         {
-            try
-            {
-                return Ok(_userService.GetUsersByName(name));
-            }
-            catch (ArgumentException e)
-            {
-                return BadRequest(new { errror = e.Message });
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(new { error = e.Message });
-            }
+            return Ok(_userService.GetUsersByName(name));
         }
 
 
         [HttpPost("update")]
         public IActionResult ChangeUserName([FromBody] UserUpdateRequest request)
         {
-            try
-            {
-                _userService.ChangeUserName(request);
-                return Ok(new { message = "User updated successfully" });
-            }
-            catch (ArgumentNullException e)
-            {
-                return BadRequest(new { error = e.Message });
-            }
-            catch (ArgumentException e)
-            {
-                return BadRequest(new { error = e.Message });
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(new { error = e.Message });
-            }
-
+            _userService.ChangeUserName(request);
+            return Ok(new { message = "User updated successfully" });
         }
 
         [HttpDelete("delete/{id}")]
         public IActionResult DeleteUser(int id)
         {
-            try
-            {
-                _userService.DeleteUser(id);
-                return Ok(new { message = "User deleted successfully" });
-            }
-            catch (ArgumentException e)
-            {
-                return BadRequest(new { error = e.Message });
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(new { error = e.Message });
-            }
+            _userService.DeleteUser(id);
+            return Ok(new { message = "User deleted successfully" });
         }
     }
 }

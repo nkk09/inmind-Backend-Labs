@@ -23,24 +23,7 @@ public class ImageController : ControllerBase
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadImage(IFormFile file)
     {
-        try
-        {
-            var filePath = await _imageService.upload_image(file);
-            return Ok(new { message = "File uploaded successfully.", filePath });
-        }
-        catch (ArgumentNullException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (Exception e)
-        {
-            return StatusCode(500, e.Message);
-        }
-
-        
+        var filePath = await _imageService.upload_image(file);
+        return Ok(new { message = "File uploaded successfully.", filePath });
     }
 }

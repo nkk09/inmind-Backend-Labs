@@ -1,5 +1,6 @@
 using System.Threading.RateLimiting;
 using lab1_nour_kassem.Services;
+using LearnWebAPI.Middlewares;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,10 @@ builder.Services.AddScoped<DateService>();
 //finally for image?
 builder.Services.AddScoped<ImageService>();
 
+//add the middleware i looked online and we should register the middleware as a service before
+//calling it. it should be transient since we want a new instance for every request
+builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
+
 // Enable static file serving
 builder.Services.AddDirectoryBrowser();
 
@@ -42,6 +47,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//this is where the middleware are listed, put exception handling at the top!
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.MapControllers();
