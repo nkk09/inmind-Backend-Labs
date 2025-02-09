@@ -1,5 +1,6 @@
 using System.Threading.RateLimiting;
 using lab1_nour_kassem.Filters;
+using lab1_nour_kassem.Models;
 using lab1_nour_kassem.Services;
 using LearnWebAPI.Middlewares;
 using Microsoft.OpenApi.Models;
@@ -35,6 +36,7 @@ builder.Services.AddScoped<ImageService>();
 //calling it. it should be transient since we want a new instance for every request
 builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
 
+builder.Services.AddSingleton<ObjectMapperService>();
 
 // Enable static file serving
 builder.Services.AddDirectoryBrowser();
@@ -44,6 +46,13 @@ builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
 var app = builder.Build();
+
+//test objectmapperservice
+var student = new Student { firstname = "Nour", lastname = "Kassem", age = 20, studentID = 202300000};
+var mapper = app.Services.GetRequiredService<ObjectMapperService>();
+var person = mapper.Map<Student, Person>(student);
+Console.WriteLine(person.FirstName + " " + person.LastName + " " + person.Age + " ");
+Console.WriteLine(student.firstname + " " + student.lastname + " " + student.age + " " + student.studentID);
 
 
 // Configure the HTTP request pipeline.
