@@ -1,4 +1,5 @@
 using System.Threading.RateLimiting;
+using lab1_nour_kassem.Filters;
 using lab1_nour_kassem.Services;
 using LearnWebAPI.Middlewares;
 using Microsoft.OpenApi.Models;
@@ -14,7 +15,7 @@ builder.Services.AddSwaggerGen(c =>
 
     c.OperationFilter<LanguageHeaderFilter>();
 });
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => { options.Filters.Add<LoggingActionFilter>(); });
 builder.Services.AddControllersWithViews();
 
 //make a singleton service injection, because:

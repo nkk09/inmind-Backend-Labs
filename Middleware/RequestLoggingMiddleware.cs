@@ -36,17 +36,16 @@ public class RequestLoggingMiddleware
         }
 
         _logger.LogInformation(
-            $"Request: " +
+            $"**Request** " +
             $"\n Method: {context.Request.Method} " +
             $"\n Path: {context.Request.Path} " +
             $"\n QueryString: {context.Request.QueryString} " +
             $"\n Headers: {JsonSerializer.Serialize(context.Request.Headers)}" +
             $"\n Body: {requestbody}" +
-            $"\n Timestamp: {DateTime.Now}" +
-            $"\n Response: ");
+            $"\n Timestamp: {DateTime.Now}");
         
         await _next(context);
         
-        _logger.LogInformation($"Response: \n StatusCode: {context.Response.StatusCode}");
+        _logger.LogInformation($"**Response** \n StatusCode: {context.Response.StatusCode}");
     }
 }
