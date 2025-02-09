@@ -34,8 +34,13 @@ builder.Services.AddScoped<ImageService>();
 //calling it. it should be transient since we want a new instance for every request
 builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
 
+
 // Enable static file serving
 builder.Services.AddDirectoryBrowser();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
 var app = builder.Build();
 
@@ -48,6 +53,9 @@ if (app.Environment.IsDevelopment())
 }
 
 //this is where the middleware are listed, put exception handling at the top!
+//and now we add logging just before exception handling because we want requests to be logged before being processed
+//we call next and then log the response (which could be an error raised by exception handler
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
