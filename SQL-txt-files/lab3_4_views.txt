@@ -1,0 +1,24 @@
+
+--let's first understand the query: we want to return, say the 3, most popular books
+--most popular means they have the biggest number of loans
+--return them as a view
+--we have in the loans table the book_id, we can group them by book_id and count them for each book.
+--then we want to order them by descending order and choose the first 3
+--from the book_id we want to get the book info from the books table
+--we want to put them in a view
+
+--baby steps:
+--select count(loan_id) as num_of_loans from loans group by book_id
+--select book_id, count(loan_id) as num_of_loans from loans group by book_id
+--select book_id, count(loan_id) as num_of_loans from loans group by book_id order by num_of_loans desc
+--select book_id, count(loan_id) as num_of_loans from loans group by book_id order by num_of_loans desc limit 3
+--select books.title, loans.book_id, count(loan_id) as num_of_loans from loans
+--                      inner join books on books.book_id = loans.book_id
+--                      group by books.title, loans.book_id order by num_of_loans desc limit 3
+--finally create the view: create view as ...
+
+create view public."Popular Books" as
+select books.title, loans.book_id, count(loan_id) as num_of_loans from loans
+                                                                           inner join books on books.book_id = loans.book_id
+group by books.title, loans.book_id order by num_of_loans desc limit 3;
+

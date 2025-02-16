@@ -1,0 +1,48 @@
+insert into authors (name, birth_date, country) VALUES
+    ('Dr. Seuss', '1904-03-02', 'USA'),
+    ('Dan Brown', '1964-06-22', 'USA'),
+    ('Marie Vareille', '1985-02-27', 'France'),
+    ('Mikhail Naimy', '1889-10-17', 'Lebanon'),
+    ('Jebran Khalil Jebran', '1883-01-06', 'Lebanon');
+
+insert into books (title, author_id, isbn, published_year) VALUES
+    ('The Prophet', 5, '9780992899523', 2019),
+    ('The Broken Wings', 5, '9781979253185', 2017),
+    ('The Book of Mirdad', 4, '9781842930380', 2002),
+    ('Elia, la passeuse d''ames', 3, '9782266264440', 2016),
+    ('The Da Vinci Code', 2,  '9780307474278', 2009),
+    ('How the Grinch Stole Christmas!',1,'9780394800790', 1957),
+    ('Digital Fortress', 2, '9780312944926', 2004);
+
+insert into borrowers (name, email, phone) VALUES
+    ('Nour Kassem', 'nkk09@mail.aub.edu', '+9610101010'),
+    ('Alice Alice', 'alice@gmail.com', '+13333334444'),
+    ('Jean Dujardin', 'jdj@yahoo.fr', '+33122334455'),
+    ('Robert Johnshon', 'rbrt2@outlook.com', '+15556667777');
+
+insert into loans (book_id, borrower_id, loan_date, return_date, returned) VALUES
+    (5, 2, current_date, null, false ),
+    (4, 1, '2023-10-10', current_date, true),
+    (1, 3, '2022-05-14', '2022-07-14', true),
+    (7, 4, '2025-01-20', null, false),
+    (4, 2, '2024-10-31', '2024-12-01', true);
+
+
+INSERT INTO loans (book_id, borrower_id, loan_date, return_date, returned) VALUES
+    (2, 1, '2024-02-01', NULL, FALSE),
+    (3, 2, '2024-01-15', NULL, FALSE),
+    (6, 3, '2023-12-10', NULL, FALSE),
+    (7, 1, '2023-11-05', '2023-12-01', TRUE),
+    (5, 4, '2022-08-20', '2022-09-15', TRUE);
+
+INSERT INTO loans (book_id, borrower_id, loan_date, return_date, returned) VALUES
+    (1, 4, '2024-02-05', NULL, FALSE),
+    (3, 3, '2024-01-25', NULL, FALSE),
+    (6, 2, '2023-11-30', NULL, FALSE),
+    (4, 1, '2024-03-10', NULL, FALSE),
+    (7, 3, '2023-12-20', NULL, FALSE),
+    (2, 2, '2023-10-05', '2023-11-01', TRUE),
+    (5, 1, '2022-07-14', '2022-08-10', TRUE),
+    (7, 4, '2021-06-10', '2021-07-05', TRUE),
+    (3, 1, '2022-12-01', '2023-01-15', TRUE),
+    (1, 2, '2023-05-20', '2023-06-10', TRUE);

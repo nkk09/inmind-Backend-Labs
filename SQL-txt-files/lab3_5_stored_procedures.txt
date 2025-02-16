@@ -1,0 +1,108 @@
+--since both borrowing and returning a book only modify the tables, and dont return anything, that means we can make them as procedures, no need for a function
+
+create procedure borrow_a_book (book_id_arg integer, borrower_id_arg integer, return_date_arg date)
+    language plpgsql
+    as $$
+    begin
+        if not exists (select book_id from books where book_id = book_id_arg) then
+            raise exception 'Book does not exist.';
+        end if;
+        if not exists (select borrower_id from borrowers where borrower_id = borrower_id_arg) then
+            raise exception 'Borrower does not exist.';
+        end if;
+        insert into loans (book_id, borrower_id, loan_date, return_date) values
+            (book_id_arg, borrower_id_arg, current_date, return_date_arg);
+        raise notice 'Successful loan.';
+    end $$;
+
+
+create procedure return_a_book(book_id_arg integer, borrower_id_arg integer)
+    language plpgsql
+    as $$
+    begin
+    if not exists (select book_id from books where book_id = book_id_arg) then
+        raise exception 'Book does not exist.';
+    end if;
+    if not exists (select borrower_id from borrowers where borrower_id = borrower_id_arg) then
+        raise exception 'Borrower does not exist.';
+    end if;
+    update loans
+        set returned = true, return_date = current_date
+        where book_id = book_id_arg and borrower_id = borrower_id_arg and returned = false;
+    raise notice 'Successful return.';
+    end $$;
+
+
+
+
+--test the procedure
+call borrow_a_book(2,4,'2026-03-03');
+call borrow_a_book(20, 1, '2026-03-03');
+call borrow_a_book(7,20,'2026-03-03');
+call return_a_book(14,4);
+call return_a_book(20,2);
+call return_a_book(15,20);
+--notice we are creating duplicates
+--also better to return a book based on loan id not on book and borrower
+--so update the procedures
+--clean the table
+DELETE FROM loans
+WHERE loan_id IN (
+    SELECT loan_id
+    FROM (
+             SELECT loan_id,
+                    ROW_NUMBER() OVER (PARTITION BY book_id, borrower_id, loan_date ORDER BY loan_id) AS row_num
+             FROM loans
+         ) subquery
+    WHERE row_num > 1
+);
+
+
+--update procedures
+create or replace procedure borrow_a_book (book_id_arg integer, borrower_id_arg integer, return_date_arg date)
+    language plpgsql
+as $$
+begin
+    if not exists (select book_id from books where book_id = book_id_arg) then
+        raise exception 'Book does not exist.';
+    end if;
+    if not exists (select borrower_id from borrowers where borrower_id = borrower_id_arg) then
+        raise exception 'Borrower does not exist.';
+    end if;
+    if exists (select loans.loan_id from loans where book_id = book_id_arg and borrower_id = borrower_id_arg and returned is false) then
+        raise exception 'Loan already exists! What are you waiting for to return that book?';
+    end if;
+    insert into loans (book_id, borrower_id, loan_date, return_date) values
+        (book_id_arg, borrower_id_arg, current_date, return_date_arg);
+    raise notice 'Successful loan.';
+end $$;
+
+
+create or replace procedure return_a_book(loan_id_arg integer)
+    language plpgsql
+as $$
+begin
+    if not exists (select loan_id from loans where loan_id = loan_id_arg) then
+        raise exception 'Loan does not exist.';
+    end if;
+    if not exists (select loans.loan_id from loans where loan_id = loan_id_arg and returned is false) then
+        raise exception 'Book already returned!';
+    end if;
+    update loans
+    set returned = true, return_date = current_date
+    where loan_id = loan_id_arg and returned = false;
+    raise notice 'Successful return.';
+end $$;
+
+
+--test again
+
+
+
+
+
+
+
+
+
+

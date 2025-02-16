@@ -1,0 +1,71 @@
+--for the sake of the queries i create more book entries that were published in the same year
+INSERT INTO authors (name, birth_date, country) VALUES
+    ('Delia Owens', '1949-04-04', 'USA'),
+    ('Matt Haig', '1975-07-03', 'United Kingdom'),
+    ('Emily St. John Mandel', '1979-09-15', 'Canada'),
+    ('V.E. Schwab', '1987-07-07', 'USA'),
+    ('Ta-Nehisi Coates', '1975-09-30', 'USA');
+
+INSERT INTO books (title, author_id, isbn, published_year) VALUES
+   ('Where the Crawdads Sing', 8, '9780735219106', 2020),
+   ('The Midnight Library', 9, '9780525559474', 2020),
+   ('The Glass Hotel', 10, '9780525521143', 2020),
+   ('The Invisible Life of Addie LaRue', 11, '9780765387561', 2020),
+   ('The Water Dancer', 12, '9780399590599', 2020);
+
+select title, author_id from books where published_year = 2020;
+
+--output:
+--Where the Crawdads Sing,6
+--The Midnight Library,7
+--The Glass Hotel,8
+--The Invisible Life of Addie LaRue,9
+--The Water Dancer,10
+
+--create loans that are overdue and fix the table to not allow return date to be null:
+insert into loans (book_id, borrower_id, loan_date, return_date, returned) VALUES
+   (13, 2, '2024-01-10', '2024-02-01', FALSE),
+   (14, 4, '2023-12-05', '2024-01-05', FALSE),
+   (15, 1, '2023-10-20', '2023-11-20', FALSE);
+
+UPDATE loans
+SET return_date = loans.loan_date + INTERVAL '14 days'
+WHERE return_date IS NULL;
+
+select * from loans where return_date is null;
+--get empty so all good now update the table
+
+alter table public.loans
+    alter column return_date set not null;
+
+
+select * from loans where returned is false;
+
+--output:
+--22,13,2,2024-01-10,2024-02-01,false
+--23,14,4,2023-12-05,2024-01-05,false
+--24,15,1,2023-10-20,2023-11-20,false
+--2,5,2,2025-02-16,2025-03-02,false
+--5,7,4,2025-01-20,2025-02-03,false
+--7,2,1,2024-02-01,2024-02-15,false
+--8,3,2,2024-01-15,2024-01-29,false
+--9,6,3,2023-12-10,2023-12-24,false
+--12,1,4,2024-02-05,2024-02-19,false
+--13,3,3,2024-01-25,2024-02-08,false
+--14,6,2,2023-11-30,2023-12-14,false
+--15,4,1,2024-03-10,2024-03-24,false
+--16,7,3,2023-12-20,2024-01-03,false
+
+SELECT * FROM loans WHERE borrower_id = (SELECT borrower_id FROM borrowers WHERE name = 'Nour Kassem');
+
+--output:
+--3,4,1,2023-10-10,2025-02-16,true
+--10,7,1,2023-11-05,2023-12-01,true
+--18,5,1,2022-07-14,2022-08-10,true
+--20,3,1,2022-12-01,2023-01-15,true
+--24,15,1,2023-10-20,2023-11-20,false
+--7,2,1,2024-02-01,2024-02-15,false
+--15,4,1,2024-03-10,2024-03-24,false
+
+select count(*) from books;
+--output: 12
